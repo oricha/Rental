@@ -1,0 +1,158 @@
+{
+	"info": {
+		"name": "Video rental",
+		"_postman_id": "a08c354a-a9e0-dddc-5989-65fe366e744d",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Film",
+			"description": "",
+			"item": [
+				{
+					"name": "List Films",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8080/film/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"film",
+								"list"
+							]
+						},
+						"description": "List all films"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Film",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Out of Africa\",\n\t\"premiumPrice\": 1.20,\n\t\"basicPrice\": 1,\n\t\"type\": \"OLD\"\n }"
+						},
+						"url": {
+							"raw": "http://localhost:8080/film/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"film",
+								"add"
+							]
+						},
+						"description": "Add 1 Film"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rental",
+			"description": "",
+			"item": [
+				{
+					"name": "Calculate Rent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json; charset=UTF-8"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userId\" : \"85d8997b-1f56-4a38-8679-dd54d4d1ca31\",\n\t\"filmId\" : \"6fbfb609-88fe-4722-9b9b-f87f3eb7f2be\",\n    \"dateIni\" : \"2017-11-01\",\n    \"dateEnd\" : \"2017-11-09\"\n    \n}\t"
+						},
+						"url": {
+							"raw": "http://localhost:8080/rent/calculate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rent",
+								"calculate"
+							]
+						},
+						"description": "Calculate rent"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"description": "",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8080/user/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"list"
+							]
+						},
+						"description": "List all users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8080/film/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"film",
+								"{{id}}"
+							]
+						},
+						"description": "Get user"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
