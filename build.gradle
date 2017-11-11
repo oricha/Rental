@@ -39,6 +39,7 @@ dependencies {
 	compile('org.codehaus.groovy:groovy-json')
 	compile('org.codehaus.groovy:groovy-xml')
 	compile('org.projectlombok:lombok:1.16.16')
+	compile group: 'joda-time', name: 'joda-time', version: '2.3'
 
 	// mandatory dependencies for using Spock
 	compile "org.codehaus.groovy:groovy-all"

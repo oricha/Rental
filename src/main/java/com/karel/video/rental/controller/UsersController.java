@@ -6,10 +6,9 @@ import com.karel.video.rental.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/user")
@@ -28,8 +27,8 @@ public class UsersController {
 
     @GetMapping(value = "/{id}")
     public @ResponseBody
-    User listFilms(@RequestParam Long id){
+    User listFilms(@PathVariable("id")UUID id){
 
-        return userRepository.findOne(id);
+        return userRepository.findById(id);
     }
 }

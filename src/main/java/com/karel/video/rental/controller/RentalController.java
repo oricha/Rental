@@ -1,8 +1,8 @@
 package com.karel.video.rental.controller;
 
 
-import com.karel.video.rental.domain.CalculateRequest;
-import com.karel.video.rental.domain.CalculateResponse;
+import com.karel.video.rental.domain.*;
+import com.karel.video.rental.repository.ReservationRepository;
 import com.karel.video.rental.service.RentalService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/rent")
@@ -18,17 +19,27 @@ public class RentalController {
 
     @Autowired
     private RentalService rentalService;
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     @PostMapping(value = "/calculate")
     public @ResponseBody
-    CalculateResponse addFilm(@RequestBody CalculateRequest request){
+    CalculateResponse makeReservation(@RequestBody CalculateRequest request){
 
         return rentalService.calculateRent(request.getDateIni(), request.getDateEnd(), request.getFilmId(), request.getUserId());
     }
 
-    @PostMapping(value = "/test")
-    void test(@RequestParam(name="dateIni") Date dateIni){
+    @PostMapping(value = "/return/{id}")
+    public @ResponseBody ReturnFilmResponse returnFilm(@PathVariable("id") UUID idReservation){
 
-        log.info( dateIni.toString());
+        ReturnFilmResponse result = new ReturnFilmResponse();
+        result.setToPay(rentalService.returnFilm(idReservation));
+        return result;
+    }
+
+    @GetMapping(value = "/reservation/list")
+    public @ResponseBody Iterable<Reservation> listFilms(){
+
+        return reservationRepository.findAll();
     }
 }

@@ -14,7 +14,12 @@
 					"name": "List Films",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
 						"body": {},
 						"url": {
 							"raw": "http://localhost:8080/film/list",
@@ -75,16 +80,17 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json; charset=UTF-8"
+								"value": "application/json"
 							},
 							{
 								"key": "Accept-Encoding",
-								"value": "application/json"
+								"value": "application/json",
+								"disabled": true
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"userId\" : \"85d8997b-1f56-4a38-8679-dd54d4d1ca31\",\n\t\"filmId\" : \"6fbfb609-88fe-4722-9b9b-f87f3eb7f2be\",\n    \"dateIni\" : \"2017-11-01\",\n    \"dateEnd\" : \"2017-11-09\"\n    \n}\t"
+							"raw": "{\n\t\"userId\" : \"85d8997b-1f56-4a38-8679-dd54d4d1ca31\",\n\t\"filmId\" : \"01e75bc1-f467-4268-bacd-e08ace6e714c\",\n    \"dateIni\" : \"2017-11-01\",\n    \"dateEnd\" : \"2017-11-10\"\n}\t"
 						},
 						"url": {
 							"raw": "http://localhost:8080/rent/calculate",
@@ -99,6 +105,65 @@
 							]
 						},
 						"description": "Calculate rent"
+					},
+					"response": []
+				},
+				{
+					"name": "List reservations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8080/rent/reservation/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rent",
+								"reservation",
+								"list"
+							]
+						},
+						"description": "List all reservations"
+					},
+					"response": []
+				},
+				{
+					"name": "Return Film",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/rent/return/c50e85c9-0217-4886-a66d-eafd414c238a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"rent",
+								"return",
+								"c50e85c9-0217-4886-a66d-eafd414c238a"
+							]
+						},
+						"description": "Return Film"
 					},
 					"response": []
 				}
@@ -134,18 +199,33 @@
 					"name": "Get Users",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"body": {},
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "85d8997b-1f56-4a38-8679-dd54d4d1ca3",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
-							"raw": "http://localhost:8080/film/{{id}}",
+							"raw": "http://localhost:8080/user/85d8997b-1f56-4a38-8679-dd54d4d1ca31",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"film",
-								"{{id}}"
+								"user",
+								"85d8997b-1f56-4a38-8679-dd54d4d1ca31"
 							]
 						},
 						"description": "Get user"

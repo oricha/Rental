@@ -1,6 +1,11 @@
-## Rental
+# Rental
 Video Rental App
 
-#Gradle
+## Gradle
 * gradle build
-* gradle bootRunn
+* gradle bootRun
+
+
+## Considerations
+* Rental app use H2 memory database, and data.sql run scripts with initial data 
+* Video rental.postman_collection.json is a Postman file to test de application

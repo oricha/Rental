@@ -1,12 +1,11 @@
 package com.karel.video.rental.service;
 
-import com.karel.video.rental.domain.CalculateResponse;
-import com.karel.video.rental.domain.FILM_TYPE;
-import com.karel.video.rental.domain.Film;
-import com.karel.video.rental.domain.User;
+import com.karel.video.rental.domain.*;
 import com.karel.video.rental.repository.FilmRepository;
+import com.karel.video.rental.repository.ReservationRepository;
 import com.karel.video.rental.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +22,8 @@ public class RentalServiceImpl  implements RentalService {
     private FilmRepository filmRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     /**
      * New releases - Price is <premium price> times number of days rented.
@@ -36,36 +37,61 @@ public class RentalServiceImpl  implements RentalService {
     @Override
     public CalculateResponse calculateRent(LocalDate dateIni, LocalDate dateEnd, UUID filmId, UUID userId) {
 
-        Float price = 0f;
-        long bonus = 0;
         CalculateResponse response ;
         User user = userRepository.findById(userId);
         Film film = filmRepository.findById(filmId);
         long days = ChronoUnit.DAYS.between(dateIni, dateEnd);
-
-        if( film.getType().equalsIgnoreCase(FILM_TYPE.PREMIUM.toString())){
-
-            price = film.getPremiumPrice() * days;
-            bonus += 2;
-
-        }else if(film.getType().equalsIgnoreCase(FILM_TYPE.REGULAR.toString())){
-
-            long restDays = days -3;
-            price = film.getBasicPrice() + film.getBasicPrice() * (( restDays > 0)? restDays : 0);
-            bonus++;
-
-        }else if(film.getType().equalsIgnoreCase(FILM_TYPE.OLD.toString())){
-
-            long restDays = days -5;
-            price = film.getBasicPrice() + film.getBasicPrice() * (( restDays > 0)? restDays : 0);
-        }
-
+        Float price = calculatePrice(film, days );
+        long bonus = calculateBonus(film);
         if(0 != bonus && null != user){
             user.setBonus( user.getBonus() + bonus);
             user = userRepository.save(user);
         }
-        response = new CalculateResponse(film.getName(), price, days, user.getName(), user.getBonus());
+
+        Reservation reservation = reservationRepository.save( new Reservation(userId, filmId, dateIni, dateEnd, price));
+        response = new CalculateResponse(film.getName(), price, days, user.getName(), user.getBonus(), reservation.getId());
 
         return response;
+    }
+
+    public Float returnFilm(UUID idReservation){
+
+        Float returnPrice = 0f;
+        Reservation reservation = reservationRepository.findOne(idReservation);
+        returnPrice = reservation.getPrice();
+        Film film = filmRepository.findById(reservation.getFilmId());
+        long days = ChronoUnit.DAYS.between(reservation.getDateIni(), reservation.getDateIni());
+
+        if( 0 < ChronoUnit.DAYS.between(reservation.getDateEnd(), LocalDate.now()) ){
+            days = ChronoUnit.DAYS.between(reservation.getDateIni(), LocalDate.now());
+            returnPrice =  calculatePrice(film, days );
+        }
+
+        return returnPrice;
+    }
+
+    private Float calculatePrice(Film film, long days){
+        Float result = 0f;
+        if(film.getType().equalsIgnoreCase(FILM_TYPE.PREMIUM.toString())){
+            result = film.getPremiumPrice() * days;
+        }else if(film.getType().equalsIgnoreCase(FILM_TYPE.REGULAR.toString())){
+            long restDays = days -3;
+            result = film.getBasicPrice() + film.getBasicPrice()  * (( restDays > 0)? restDays : 0);
+
+        }else if(film.getType().equalsIgnoreCase(FILM_TYPE.OLD.toString())){
+            long restDays = days -5;
+            result = film.getBasicPrice()  + film.getBasicPrice()  * (( restDays > 0)? restDays : 0);
+        }
+        return result;
+    }
+
+    private long calculateBonus(Film film){
+        long bonus = 0;
+        if(film.getType().equalsIgnoreCase(FILM_TYPE.PREMIUM.toString())){
+            bonus += 2;
+        }else if(film.getType().equalsIgnoreCase(FILM_TYPE.REGULAR.toString())){
+            bonus++;
+        }
+        return bonus;
     }
 }

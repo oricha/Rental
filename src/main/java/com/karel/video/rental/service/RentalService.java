@@ -11,4 +11,6 @@ public interface RentalService {
 
     CalculateResponse calculateRent(LocalDate dateIn, LocalDate dateOut, UUID filmId, UUID userId);
 
+    Float returnFilm(UUID idReservation);
+
 }

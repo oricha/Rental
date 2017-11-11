@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -16,4 +17,7 @@ public class CalculateResponse implements Serializable {
     private long days;
     private String userName;
     private long bonus;
+    private UUID reservation;
+
+
 }
