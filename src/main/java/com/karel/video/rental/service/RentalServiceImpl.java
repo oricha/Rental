@@ -37,20 +37,21 @@ public class RentalServiceImpl  implements RentalService {
     @Override
     public CalculateResponse calculateRent(LocalDate dateIni, LocalDate dateEnd, UUID filmId, UUID userId) {
 
-        CalculateResponse response ;
+        CalculateResponse response = new CalculateResponse();
         User user = userRepository.findById(userId);
         Film film = filmRepository.findById(filmId);
-        long days = ChronoUnit.DAYS.between(dateIni, dateEnd);
-        Float price = calculatePrice(film, days );
-        long bonus = calculateBonus(film);
-        if(0 != bonus && null != user){
-            user.setBonus( user.getBonus() + bonus);
-            user = userRepository.save(user);
+        if( null != film) {
+            long days = ChronoUnit.DAYS.between(dateIni, dateEnd);
+            Float price = calculatePrice(film, days);
+            long bonus = calculateBonus(film);
+            if (0 != bonus && null != user) {
+                user.setBonus(user.getBonus() + bonus);
+                user = userRepository.save(user);
+            }
+
+            Reservation reservation = reservationRepository.save(new Reservation(userId, filmId, dateIni, dateEnd, price));
+            response = new CalculateResponse(film.getName(), price, days, user.getName(), user.getBonus(), reservation.getId());
         }
-
-        Reservation reservation = reservationRepository.save( new Reservation(userId, filmId, dateIni, dateEnd, price));
-        response = new CalculateResponse(film.getName(), price, days, user.getName(), user.getBonus(), reservation.getId());
-
         return response;
     }
 
@@ -58,15 +59,18 @@ public class RentalServiceImpl  implements RentalService {
 
         Float returnPrice = 0f;
         Reservation reservation = reservationRepository.findOne(idReservation);
-        returnPrice = reservation.getPrice();
-        Film film = filmRepository.findById(reservation.getFilmId());
-        long days = ChronoUnit.DAYS.between(reservation.getDateIni(), reservation.getDateIni());
+        Film film;
+        if( null != reservation) {
+            film = filmRepository.findById(reservation.getFilmId());
 
-        if( 0 < ChronoUnit.DAYS.between(reservation.getDateEnd(), LocalDate.now()) ){
-            days = ChronoUnit.DAYS.between(reservation.getDateIni(), LocalDate.now());
-            returnPrice =  calculatePrice(film, days );
+            if( null != film) {
+                returnPrice = reservation.getPrice();
+                if (0 < ChronoUnit.DAYS.between(reservation.getDateEnd(), LocalDate.now())) {
+                    long days = ChronoUnit.DAYS.between(reservation.getDateIni(), LocalDate.now());
+                    returnPrice = calculatePrice(film, days);
+                }
+            }
         }
-
         return returnPrice;
     }
 
